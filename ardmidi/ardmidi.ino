@@ -1,26 +1,16 @@
-/*this code can send midi signals via serial communication and with help of using some potentiometer at the analog input you can make a cool modulater  
- for DAW  you use to produce music you have to downlod some simple software for this one is loopmidi and other is hairlessmidi which helps in interfacing between midi signal and arduino serial communication
- hairless midi( https://www.softpedia.com/get/System/System-Miscellaneous/Hairless-MIDI-to-Serial-Bridge.shtml)
- loopmidi(https://www.tobias-erichsen.de/software/loopmidi.html)
-for query mail me at  duaanirudh054@gmail.com
- */
-
-
-// |===============MESSAGE=================|============DONNEE1============|=========DONNEE2==========|
-// | 1000 cccc = note off => 128(10) | 0xxx xxxx: hauteur note | 0xxx xxxx: velocity |
-// | 1001 cccc = note on => 129(10) | 0xxx xxxx: hauteur note | 0xxx xxxx: velocity|
-// | 1110 cccc = pitch bend => 224(10) | 0000 0000: code | 0xxx xxxx: vitesse |
-// | 1011 cccc = control change => 176(10) | 0xxx xxxx: numero | 0xxx xxxx: valeur |
-// --------------------------------------------------------------------------------------------------
-//========================
 //Analog pin ZERO
+int ledpinblue=8;
+int ledpingreen=13;
+int ledpinnot=12;
 int valuePinZero=0;
 int valuePinZero2=0;
- 
+
+int data1;
+int ledval;
 //Analog pin ONE
 int valuePinOne=0;
 int valuePinOne2=0;
- 
+
 //Analog pin TWO
 int valuePinTwo=0;
 int valuePinTwo2=0;
@@ -28,42 +18,61 @@ int valuePinTwo2=0;
  
 void setup()
 {
-Serial.begin(57600); 
- 
+Serial.begin(115200); 
+
+pinMode(ledpinblue, OUTPUT);
+pinMode(ledpingreen, OUTPUT); 
 }
  
 void loop()
 {
-//controleur ZERO
 
-//————————
-valuePinZero = (analogRead(0)/8); 
+    
+
+delay(50);
+valuePinZero = (analogRead(0)/8);
+analogWrite(ledpinblue, valuePinZero); 
 if (valuePinZero-valuePinZero2 >=2 || valuePinZero2-valuePinZero >=2) { 
-valuePinZero2 = valuePinZero;
+ digitalWrite(ledpinnot, HIGH);
+delay(10);
+analogWrite(ledpinnot, LOW);
+delay(10);
  
-MIDI_TX(176,75, valuePinZero); 
+MIDI_TX(176,75, valuePinZero);
+valuePinZero2 = valuePinZero; 
+
 //delay(100); 
 }
  
 //controleur ONE
 //————————
 valuePinOne = (analogRead(1)/8);
-
+analogWrite(ledpinblue, valuePinOne);
 if (valuePinOne - valuePinOne2 >=2 || valuePinOne2 - valuePinOne >=2)
 {
- 
+ digitalWrite(ledpingreen, HIGH);
+delay(10);
+analogWrite(ledpingreen, LOW);
+delay(10);
 valuePinOne2 = valuePinOne;
  
 MIDI_TX(176,76, valuePinOne);
 //delay(100);
 }
  
-//controleur TWO
+ledval=analogRead(2);
 //————————
 valuePinTwo = (analogRead(2)/8);
+analogWrite(ledpinblue, valuePinTwo);
+
 if (valuePinTwo - valuePinTwo2 >=2 || valuePinTwo2 - valuePinTwo >=2)
 {
- 
+digitalWrite(ledpinblue, HIGH);
+delay(50);
+analogWrite(ledpinblue, LOW);
+delay(50);
+
+
 valuePinTwo2 = valuePinTwo;
  
 MIDI_TX(176,77, valuePinTwo);
